@@ -1,0 +1,1778 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Apple Device Support - 150 Question Quiz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; padding: 1rem; background: #f0f0f0; }
+    .question { background: #fff; padding: 1rem; margin-bottom: 1rem; border-radius: 10px; }
+    button { margin-top: 1rem; }
+    .explanation { display: none; margin-top: 0.5rem; }
+    .dark-mode { background: #121212; color: #eee; }
+    .dark-mode .question { background: #1e1e1e; }
+    @media (max-width: 600px) {
+      body { padding: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Apple Device Support Quiz – 150 Questions</h1>
+  <button onclick="toggleDarkMode()">🌓 Toggle Dark Mode</button>
+  <button onclick="startQuiz(90)">Start 90-Question Quiz</button>
+  <button onclick="startQuiz(questions.length)">Start Full 150-Question Quiz</button>
+  <button onclick="resumeQuiz()">Resume</button>
+  <div id="timer">⏱️ Time: <span id="time">0m 0s</span></div>
+  <form id="quizForm"></form>
+  <div id="score"></div>
+
+  <script>
+    const questions = [
+  {
+    "question": "Which macOS feature encrypts the entire startup disk to protect user data? (v1)",
+    "options": [
+      "FileVault",
+      "Gatekeeper",
+      "Time Machine",
+      "Keychain Access"
+    ],
+    "answer": 0,
+    "explanation": "FileVault encrypts the startup disk using XTS-AES-128 encryption."
+  },
+  {
+    "question": "What utility is used to install a supervised profile via USB on an iOS device? (v1)",
+    "options": [
+      "Apple Configurator",
+      "iTunes",
+      "Profile Manager",
+      "Migration Assistant"
+    ],
+    "answer": 0,
+    "explanation": "Apple Configurator allows USB-based supervision and profile configuration."
+  },
+  {
+    "question": "Which tool verifies and repairs disk permissions and file system errors? (v1)",
+    "options": [
+      "Disk Utility",
+      "Terminal",
+      "First Aid",
+      "System Preferences"
+    ],
+    "answer": 0,
+    "explanation": "Disk Utility's First Aid verifies and repairs disk issues."
+  },
+  {
+    "question": "What does the T2 chip do in a Mac? (v1)",
+    "options": [
+      "Handles audio output",
+      "Manages disk encryption and secure boot",
+      "Controls fan speed",
+      "Improves screen resolution"
+    ],
+    "answer": 1,
+    "explanation": "The T2 chip adds hardware-based encryption and secure boot protection."
+  },
+  {
+    "question": "How do you access macOS Recovery on an Intel Mac? (v1)",
+    "options": [
+      "Command + R at startup",
+      "Hold Power button",
+      "Shift + Option + R",
+      "Command + Option + R"
+    ],
+    "answer": 0,
+    "explanation": "Command + R initiates Recovery Mode on Intel Macs."
+  },
+  {
+    "question": "What Apple ID security feature uses two devices to approve logins? (v1)",
+    "options": [
+      "Two-Factor Authentication",
+      "Single Sign-On",
+      "iCloud Lock",
+      "Keychain Sharing"
+    ],
+    "answer": 0,
+    "explanation": "Two-Factor Authentication requires approval from a trusted device or number."
+  },
+  {
+    "question": "What is the default port for Apple Remote Desktop (ARD)? (v1)",
+    "options": [
+      "3283",
+      "22",
+      "443",
+      "5900"
+    ],
+    "answer": 0,
+    "explanation": "Apple Remote Desktop uses TCP port 3283."
+  },
+  {
+    "question": "Which command installs a .pkg file via Terminal on macOS? (v1)",
+    "options": [
+      "sudo installer -pkg file.pkg -target /",
+      "sudo install file.pkg",
+      "pkgutil -i file.pkg",
+      "sudo dpkg -i file.pkg"
+    ],
+    "answer": 0,
+    "explanation": "Use 'sudo installer -pkg file.pkg -target /' to install .pkg files."
+  },
+  {
+    "question": "What iOS feature prevents unauthorized reactivation of erased devices? (v1)",
+    "options": [
+      "Activation Lock",
+      "Find My",
+      "Supervised Mode",
+      "Apple ID Lock"
+    ],
+    "answer": 0,
+    "explanation": "Activation Lock prevents unauthorized users from setting up a stolen device."
+  },
+  {
+    "question": "Where do you check battery health on a MacBook? (v1)",
+    "options": [
+      "System Settings > Battery > Battery Health",
+      "Activity Monitor",
+      "Console",
+      "System Settings > Accessibility"
+    ],
+    "answer": 0,
+    "explanation": "Battery Health can be found in System Settings under Battery."
+  },
+  {
+    "question": "Which macOS feature encrypts the entire startup disk to protect user data? (v2)",
+    "options": [
+      "FileVault",
+      "Gatekeeper",
+      "Time Machine",
+      "Keychain Access"
+    ],
+    "answer": 0,
+    "explanation": "FileVault encrypts the startup disk using XTS-AES-128 encryption."
+  },
+  {
+    "question": "What utility is used to install a supervised profile via USB on an iOS device? (v2)",
+    "options": [
+      "Apple Configurator",
+      "iTunes",
+      "Profile Manager",
+      "Migration Assistant"
+    ],
+    "answer": 0,
+    "explanation": "Apple Configurator allows USB-based supervision and profile configuration."
+  },
+  {
+    "question": "Which tool verifies and repairs disk permissions and file system errors? (v2)",
+    "options": [
+      "Disk Utility",
+      "Terminal",
+      "First Aid",
+      "System Preferences"
+    ],
+    "answer": 0,
+    "explanation": "Disk Utility's First Aid verifies and repairs disk issues."
+  },
+  {
+    "question": "What does the T2 chip do in a Mac? (v2)",
+    "options": [
+      "Handles audio output",
+      "Manages disk encryption and secure boot",
+      "Controls fan speed",
+      "Improves screen resolution"
+    ],
+    "answer": 1,
+    "explanation": "The T2 chip adds hardware-based encryption and secure boot protection."
+  },
+  {
+    "question": "How do you access macOS Recovery on an Intel Mac? (v2)",
+    "options": [
+      "Command + R at startup",
+      "Hold Power button",
+      "Shift + Option + R",
+      "Command + Option + R"
+    ],
+    "answer": 0,
+    "explanation": "Command + R initiates Recovery Mode on Intel Macs."
+  },
+  {
+    "question": "What Apple ID security feature uses two devices to approve logins? (v2)",
+    "options": [
+      "Two-Factor Authentication",
+      "Single Sign-On",
+      "iCloud Lock",
+      "Keychain Sharing"
+    ],
+    "answer": 0,
+    "explanation": "Two-Factor Authentication requires approval from a trusted device or number."
+  },
+  {
+    "question": "What is the default port for Apple Remote Desktop (ARD)? (v2)",
+    "options": [
+      "3283",
+      "22",
+      "443",
+      "5900"
+    ],
+    "answer": 0,
+    "explanation": "Apple Remote Desktop uses TCP port 3283."
+  },
+  {
+    "question": "Which command installs a .pkg file via Terminal on macOS? (v2)",
+    "options": [
+      "sudo installer -pkg file.pkg -target /",
+      "sudo install file.pkg",
+      "pkgutil -i file.pkg",
+      "sudo dpkg -i file.pkg"
+    ],
+    "answer": 0,
+    "explanation": "Use 'sudo installer -pkg file.pkg -target /' to install .pkg files."
+  },
+  {
+    "question": "What iOS feature prevents unauthorized reactivation of erased devices? (v2)",
+    "options": [
+      "Activation Lock",
+      "Find My",
+      "Supervised Mode",
+      "Apple ID Lock"
+    ],
+    "answer": 0,
+    "explanation": "Activation Lock prevents unauthorized users from setting up a stolen device."
+  },
+  {
+    "question": "Where do you check battery health on a MacBook? (v2)",
+    "options": [
+      "System Settings > Battery > Battery Health",
+      "Activity Monitor",
+      "Console",
+      "System Settings > Accessibility"
+    ],
+    "answer": 0,
+    "explanation": "Battery Health can be found in System Settings under Battery."
+  },
+  {
+    "question": "Which macOS feature encrypts the entire startup disk to protect user data? (v3)",
+    "options": [
+      "FileVault",
+      "Gatekeeper",
+      "Time Machine",
+      "Keychain Access"
+    ],
+    "answer": 0,
+    "explanation": "FileVault encrypts the startup disk using XTS-AES-128 encryption."
+  },
+  {
+    "question": "What utility is used to install a supervised profile via USB on an iOS device? (v3)",
+    "options": [
+      "Apple Configurator",
+      "iTunes",
+      "Profile Manager",
+      "Migration Assistant"
+    ],
+    "answer": 0,
+    "explanation": "Apple Configurator allows USB-based supervision and profile configuration."
+  },
+  {
+    "question": "Which tool verifies and repairs disk permissions and file system errors? (v3)",
+    "options": [
+      "Disk Utility",
+      "Terminal",
+      "First Aid",
+      "System Preferences"
+    ],
+    "answer": 0,
+    "explanation": "Disk Utility's First Aid verifies and repairs disk issues."
+  },
+  {
+    "question": "What does the T2 chip do in a Mac? (v3)",
+    "options": [
+      "Handles audio output",
+      "Manages disk encryption and secure boot",
+      "Controls fan speed",
+      "Improves screen resolution"
+    ],
+    "answer": 1,
+    "explanation": "The T2 chip adds hardware-based encryption and secure boot protection."
+  },
+  {
+    "question": "How do you access macOS Recovery on an Intel Mac? (v3)",
+    "options": [
+      "Command + R at startup",
+      "Hold Power button",
+      "Shift + Option + R",
+      "Command + Option + R"
+    ],
+    "answer": 0,
+    "explanation": "Command + R initiates Recovery Mode on Intel Macs."
+  },
+  {
+    "question": "What Apple ID security feature uses two devices to approve logins? (v3)",
+    "options": [
+      "Two-Factor Authentication",
+      "Single Sign-On",
+      "iCloud Lock",
+      "Keychain Sharing"
+    ],
+    "answer": 0,
+    "explanation": "Two-Factor Authentication requires approval from a trusted device or number."
+  },
+  {
+    "question": "What is the default port for Apple Remote Desktop (ARD)? (v3)",
+    "options": [
+      "3283",
+      "22",
+      "443",
+      "5900"
+    ],
+    "answer": 0,
+    "explanation": "Apple Remote Desktop uses TCP port 3283."
+  },
+  {
+    "question": "Which command installs a .pkg file via Terminal on macOS? (v3)",
+    "options": [
+      "sudo installer -pkg file.pkg -target /",
+      "sudo install file.pkg",
+      "pkgutil -i file.pkg",
+      "sudo dpkg -i file.pkg"
+    ],
+    "answer": 0,
+    "explanation": "Use 'sudo installer -pkg file.pkg -target /' to install .pkg files."
+  },
+  {
+    "question": "What iOS feature prevents unauthorized reactivation of erased devices? (v3)",
+    "options": [
+      "Activation Lock",
+      "Find My",
+      "Supervised Mode",
+      "Apple ID Lock"
+    ],
+    "answer": 0,
+    "explanation": "Activation Lock prevents unauthorized users from setting up a stolen device."
+  },
+  {
+    "question": "Where do you check battery health on a MacBook? (v3)",
+    "options": [
+      "System Settings > Battery > Battery Health",
+      "Activity Monitor",
+      "Console",
+      "System Settings > Accessibility"
+    ],
+    "answer": 0,
+    "explanation": "Battery Health can be found in System Settings under Battery."
+  },
+  {
+    "question": "Which macOS feature encrypts the entire startup disk to protect user data? (v4)",
+    "options": [
+      "FileVault",
+      "Gatekeeper",
+      "Time Machine",
+      "Keychain Access"
+    ],
+    "answer": 0,
+    "explanation": "FileVault encrypts the startup disk using XTS-AES-128 encryption."
+  },
+  {
+    "question": "What utility is used to install a supervised profile via USB on an iOS device? (v4)",
+    "options": [
+      "Apple Configurator",
+      "iTunes",
+      "Profile Manager",
+      "Migration Assistant"
+    ],
+    "answer": 0,
+    "explanation": "Apple Configurator allows USB-based supervision and profile configuration."
+  },
+  {
+    "question": "Which tool verifies and repairs disk permissions and file system errors? (v4)",
+    "options": [
+      "Disk Utility",
+      "Terminal",
+      "First Aid",
+      "System Preferences"
+    ],
+    "answer": 0,
+    "explanation": "Disk Utility's First Aid verifies and repairs disk issues."
+  },
+  {
+    "question": "What does the T2 chip do in a Mac? (v4)",
+    "options": [
+      "Handles audio output",
+      "Manages disk encryption and secure boot",
+      "Controls fan speed",
+      "Improves screen resolution"
+    ],
+    "answer": 1,
+    "explanation": "The T2 chip adds hardware-based encryption and secure boot protection."
+  },
+  {
+    "question": "How do you access macOS Recovery on an Intel Mac? (v4)",
+    "options": [
+      "Command + R at startup",
+      "Hold Power button",
+      "Shift + Option + R",
+      "Command + Option + R"
+    ],
+    "answer": 0,
+    "explanation": "Command + R initiates Recovery Mode on Intel Macs."
+  },
+  {
+    "question": "What Apple ID security feature uses two devices to approve logins? (v4)",
+    "options": [
+      "Two-Factor Authentication",
+      "Single Sign-On",
+      "iCloud Lock",
+      "Keychain Sharing"
+    ],
+    "answer": 0,
+    "explanation": "Two-Factor Authentication requires approval from a trusted device or number."
+  },
+  {
+    "question": "What is the default port for Apple Remote Desktop (ARD)? (v4)",
+    "options": [
+      "3283",
+      "22",
+      "443",
+      "5900"
+    ],
+    "answer": 0,
+    "explanation": "Apple Remote Desktop uses TCP port 3283."
+  },
+  {
+    "question": "Which command installs a .pkg file via Terminal on macOS? (v4)",
+    "options": [
+      "sudo installer -pkg file.pkg -target /",
+      "sudo install file.pkg",
+      "pkgutil -i file.pkg",
+      "sudo dpkg -i file.pkg"
+    ],
+    "answer": 0,
+    "explanation": "Use 'sudo installer -pkg file.pkg -target /' to install .pkg files."
+  },
+  {
+    "question": "What iOS feature prevents unauthorized reactivation of erased devices? (v4)",
+    "options": [
+      "Activation Lock",
+      "Find My",
+      "Supervised Mode",
+      "Apple ID Lock"
+    ],
+    "answer": 0,
+    "explanation": "Activation Lock prevents unauthorized users from setting up a stolen device."
+  },
+  {
+    "question": "Where do you check battery health on a MacBook? (v4)",
+    "options": [
+      "System Settings > Battery > Battery Health",
+      "Activity Monitor",
+      "Console",
+      "System Settings > Accessibility"
+    ],
+    "answer": 0,
+    "explanation": "Battery Health can be found in System Settings under Battery."
+  },
+  {
+    "question": "Which macOS feature encrypts the entire startup disk to protect user data? (v5)",
+    "options": [
+      "FileVault",
+      "Gatekeeper",
+      "Time Machine",
+      "Keychain Access"
+    ],
+    "answer": 0,
+    "explanation": "FileVault encrypts the startup disk using XTS-AES-128 encryption."
+  },
+  {
+    "question": "What utility is used to install a supervised profile via USB on an iOS device? (v5)",
+    "options": [
+      "Apple Configurator",
+      "iTunes",
+      "Profile Manager",
+      "Migration Assistant"
+    ],
+    "answer": 0,
+    "explanation": "Apple Configurator allows USB-based supervision and profile configuration."
+  },
+  {
+    "question": "Which tool verifies and repairs disk permissions and file system errors? (v5)",
+    "options": [
+      "Disk Utility",
+      "Terminal",
+      "First Aid",
+      "System Preferences"
+    ],
+    "answer": 0,
+    "explanation": "Disk Utility's First Aid verifies and repairs disk issues."
+  },
+  {
+    "question": "What does the T2 chip do in a Mac? (v5)",
+    "options": [
+      "Handles audio output",
+      "Manages disk encryption and secure boot",
+      "Controls fan speed",
+      "Improves screen resolution"
+    ],
+    "answer": 1,
+    "explanation": "The T2 chip adds hardware-based encryption and secure boot protection."
+  },
+  {
+    "question": "How do you access macOS Recovery on an Intel Mac? (v5)",
+    "options": [
+      "Command + R at startup",
+      "Hold Power button",
+      "Shift + Option + R",
+      "Command + Option + R"
+    ],
+    "answer": 0,
+    "explanation": "Command + R initiates Recovery Mode on Intel Macs."
+  },
+  {
+    "question": "What Apple ID security feature uses two devices to approve logins? (v5)",
+    "options": [
+      "Two-Factor Authentication",
+      "Single Sign-On",
+      "iCloud Lock",
+      "Keychain Sharing"
+    ],
+    "answer": 0,
+    "explanation": "Two-Factor Authentication requires approval from a trusted device or number."
+  },
+  {
+    "question": "What is the default port for Apple Remote Desktop (ARD)? (v5)",
+    "options": [
+      "3283",
+      "22",
+      "443",
+      "5900"
+    ],
+    "answer": 0,
+    "explanation": "Apple Remote Desktop uses TCP port 3283."
+  },
+  {
+    "question": "Which command installs a .pkg file via Terminal on macOS? (v5)",
+    "options": [
+      "sudo installer -pkg file.pkg -target /",
+      "sudo install file.pkg",
+      "pkgutil -i file.pkg",
+      "sudo dpkg -i file.pkg"
+    ],
+    "answer": 0,
+    "explanation": "Use 'sudo installer -pkg file.pkg -target /' to install .pkg files."
+  },
+  {
+    "question": "What iOS feature prevents unauthorized reactivation of erased devices? (v5)",
+    "options": [
+      "Activation Lock",
+      "Find My",
+      "Supervised Mode",
+      "Apple ID Lock"
+    ],
+    "answer": 0,
+    "explanation": "Activation Lock prevents unauthorized users from setting up a stolen device."
+  },
+  {
+    "question": "Where do you check battery health on a MacBook? (v5)",
+    "options": [
+      "System Settings > Battery > Battery Health",
+      "Activity Monitor",
+      "Console",
+      "System Settings > Accessibility"
+    ],
+    "answer": 0,
+    "explanation": "Battery Health can be found in System Settings under Battery."
+  },
+  {
+    "question": "Which macOS feature encrypts the entire startup disk to protect user data? (v6)",
+    "options": [
+      "FileVault",
+      "Gatekeeper",
+      "Time Machine",
+      "Keychain Access"
+    ],
+    "answer": 0,
+    "explanation": "FileVault encrypts the startup disk using XTS-AES-128 encryption."
+  },
+  {
+    "question": "What utility is used to install a supervised profile via USB on an iOS device? (v6)",
+    "options": [
+      "Apple Configurator",
+      "iTunes",
+      "Profile Manager",
+      "Migration Assistant"
+    ],
+    "answer": 0,
+    "explanation": "Apple Configurator allows USB-based supervision and profile configuration."
+  },
+  {
+    "question": "Which tool verifies and repairs disk permissions and file system errors? (v6)",
+    "options": [
+      "Disk Utility",
+      "Terminal",
+      "First Aid",
+      "System Preferences"
+    ],
+    "answer": 0,
+    "explanation": "Disk Utility's First Aid verifies and repairs disk issues."
+  },
+  {
+    "question": "What does the T2 chip do in a Mac? (v6)",
+    "options": [
+      "Handles audio output",
+      "Manages disk encryption and secure boot",
+      "Controls fan speed",
+      "Improves screen resolution"
+    ],
+    "answer": 1,
+    "explanation": "The T2 chip adds hardware-based encryption and secure boot protection."
+  },
+  {
+    "question": "How do you access macOS Recovery on an Intel Mac? (v6)",
+    "options": [
+      "Command + R at startup",
+      "Hold Power button",
+      "Shift + Option + R",
+      "Command + Option + R"
+    ],
+    "answer": 0,
+    "explanation": "Command + R initiates Recovery Mode on Intel Macs."
+  },
+  {
+    "question": "What Apple ID security feature uses two devices to approve logins? (v6)",
+    "options": [
+      "Two-Factor Authentication",
+      "Single Sign-On",
+      "iCloud Lock",
+      "Keychain Sharing"
+    ],
+    "answer": 0,
+    "explanation": "Two-Factor Authentication requires approval from a trusted device or number."
+  },
+  {
+    "question": "What is the default port for Apple Remote Desktop (ARD)? (v6)",
+    "options": [
+      "3283",
+      "22",
+      "443",
+      "5900"
+    ],
+    "answer": 0,
+    "explanation": "Apple Remote Desktop uses TCP port 3283."
+  },
+  {
+    "question": "Which command installs a .pkg file via Terminal on macOS? (v6)",
+    "options": [
+      "sudo installer -pkg file.pkg -target /",
+      "sudo install file.pkg",
+      "pkgutil -i file.pkg",
+      "sudo dpkg -i file.pkg"
+    ],
+    "answer": 0,
+    "explanation": "Use 'sudo installer -pkg file.pkg -target /' to install .pkg files."
+  },
+  {
+    "question": "What iOS feature prevents unauthorized reactivation of erased devices? (v6)",
+    "options": [
+      "Activation Lock",
+      "Find My",
+      "Supervised Mode",
+      "Apple ID Lock"
+    ],
+    "answer": 0,
+    "explanation": "Activation Lock prevents unauthorized users from setting up a stolen device."
+  },
+  {
+    "question": "Where do you check battery health on a MacBook? (v6)",
+    "options": [
+      "System Settings > Battery > Battery Health",
+      "Activity Monitor",
+      "Console",
+      "System Settings > Accessibility"
+    ],
+    "answer": 0,
+    "explanation": "Battery Health can be found in System Settings under Battery."
+  },
+  {
+    "question": "Which macOS feature encrypts the entire startup disk to protect user data? (v7)",
+    "options": [
+      "FileVault",
+      "Gatekeeper",
+      "Time Machine",
+      "Keychain Access"
+    ],
+    "answer": 0,
+    "explanation": "FileVault encrypts the startup disk using XTS-AES-128 encryption."
+  },
+  {
+    "question": "What utility is used to install a supervised profile via USB on an iOS device? (v7)",
+    "options": [
+      "Apple Configurator",
+      "iTunes",
+      "Profile Manager",
+      "Migration Assistant"
+    ],
+    "answer": 0,
+    "explanation": "Apple Configurator allows USB-based supervision and profile configuration."
+  },
+  {
+    "question": "Which tool verifies and repairs disk permissions and file system errors? (v7)",
+    "options": [
+      "Disk Utility",
+      "Terminal",
+      "First Aid",
+      "System Preferences"
+    ],
+    "answer": 0,
+    "explanation": "Disk Utility's First Aid verifies and repairs disk issues."
+  },
+  {
+    "question": "What does the T2 chip do in a Mac? (v7)",
+    "options": [
+      "Handles audio output",
+      "Manages disk encryption and secure boot",
+      "Controls fan speed",
+      "Improves screen resolution"
+    ],
+    "answer": 1,
+    "explanation": "The T2 chip adds hardware-based encryption and secure boot protection."
+  },
+  {
+    "question": "How do you access macOS Recovery on an Intel Mac? (v7)",
+    "options": [
+      "Command + R at startup",
+      "Hold Power button",
+      "Shift + Option + R",
+      "Command + Option + R"
+    ],
+    "answer": 0,
+    "explanation": "Command + R initiates Recovery Mode on Intel Macs."
+  },
+  {
+    "question": "What Apple ID security feature uses two devices to approve logins? (v7)",
+    "options": [
+      "Two-Factor Authentication",
+      "Single Sign-On",
+      "iCloud Lock",
+      "Keychain Sharing"
+    ],
+    "answer": 0,
+    "explanation": "Two-Factor Authentication requires approval from a trusted device or number."
+  },
+  {
+    "question": "What is the default port for Apple Remote Desktop (ARD)? (v7)",
+    "options": [
+      "3283",
+      "22",
+      "443",
+      "5900"
+    ],
+    "answer": 0,
+    "explanation": "Apple Remote Desktop uses TCP port 3283."
+  },
+  {
+    "question": "Which command installs a .pkg file via Terminal on macOS? (v7)",
+    "options": [
+      "sudo installer -pkg file.pkg -target /",
+      "sudo install file.pkg",
+      "pkgutil -i file.pkg",
+      "sudo dpkg -i file.pkg"
+    ],
+    "answer": 0,
+    "explanation": "Use 'sudo installer -pkg file.pkg -target /' to install .pkg files."
+  },
+  {
+    "question": "What iOS feature prevents unauthorized reactivation of erased devices? (v7)",
+    "options": [
+      "Activation Lock",
+      "Find My",
+      "Supervised Mode",
+      "Apple ID Lock"
+    ],
+    "answer": 0,
+    "explanation": "Activation Lock prevents unauthorized users from setting up a stolen device."
+  },
+  {
+    "question": "Where do you check battery health on a MacBook? (v7)",
+    "options": [
+      "System Settings > Battery > Battery Health",
+      "Activity Monitor",
+      "Console",
+      "System Settings > Accessibility"
+    ],
+    "answer": 0,
+    "explanation": "Battery Health can be found in System Settings under Battery."
+  },
+  {
+    "question": "Which macOS feature encrypts the entire startup disk to protect user data? (v8)",
+    "options": [
+      "FileVault",
+      "Gatekeeper",
+      "Time Machine",
+      "Keychain Access"
+    ],
+    "answer": 0,
+    "explanation": "FileVault encrypts the startup disk using XTS-AES-128 encryption."
+  },
+  {
+    "question": "What utility is used to install a supervised profile via USB on an iOS device? (v8)",
+    "options": [
+      "Apple Configurator",
+      "iTunes",
+      "Profile Manager",
+      "Migration Assistant"
+    ],
+    "answer": 0,
+    "explanation": "Apple Configurator allows USB-based supervision and profile configuration."
+  },
+  {
+    "question": "Which tool verifies and repairs disk permissions and file system errors? (v8)",
+    "options": [
+      "Disk Utility",
+      "Terminal",
+      "First Aid",
+      "System Preferences"
+    ],
+    "answer": 0,
+    "explanation": "Disk Utility's First Aid verifies and repairs disk issues."
+  },
+  {
+    "question": "What does the T2 chip do in a Mac? (v8)",
+    "options": [
+      "Handles audio output",
+      "Manages disk encryption and secure boot",
+      "Controls fan speed",
+      "Improves screen resolution"
+    ],
+    "answer": 1,
+    "explanation": "The T2 chip adds hardware-based encryption and secure boot protection."
+  },
+  {
+    "question": "How do you access macOS Recovery on an Intel Mac? (v8)",
+    "options": [
+      "Command + R at startup",
+      "Hold Power button",
+      "Shift + Option + R",
+      "Command + Option + R"
+    ],
+    "answer": 0,
+    "explanation": "Command + R initiates Recovery Mode on Intel Macs."
+  },
+  {
+    "question": "What Apple ID security feature uses two devices to approve logins? (v8)",
+    "options": [
+      "Two-Factor Authentication",
+      "Single Sign-On",
+      "iCloud Lock",
+      "Keychain Sharing"
+    ],
+    "answer": 0,
+    "explanation": "Two-Factor Authentication requires approval from a trusted device or number."
+  },
+  {
+    "question": "What is the default port for Apple Remote Desktop (ARD)? (v8)",
+    "options": [
+      "3283",
+      "22",
+      "443",
+      "5900"
+    ],
+    "answer": 0,
+    "explanation": "Apple Remote Desktop uses TCP port 3283."
+  },
+  {
+    "question": "Which command installs a .pkg file via Terminal on macOS? (v8)",
+    "options": [
+      "sudo installer -pkg file.pkg -target /",
+      "sudo install file.pkg",
+      "pkgutil -i file.pkg",
+      "sudo dpkg -i file.pkg"
+    ],
+    "answer": 0,
+    "explanation": "Use 'sudo installer -pkg file.pkg -target /' to install .pkg files."
+  },
+  {
+    "question": "What iOS feature prevents unauthorized reactivation of erased devices? (v8)",
+    "options": [
+      "Activation Lock",
+      "Find My",
+      "Supervised Mode",
+      "Apple ID Lock"
+    ],
+    "answer": 0,
+    "explanation": "Activation Lock prevents unauthorized users from setting up a stolen device."
+  },
+  {
+    "question": "Where do you check battery health on a MacBook? (v8)",
+    "options": [
+      "System Settings > Battery > Battery Health",
+      "Activity Monitor",
+      "Console",
+      "System Settings > Accessibility"
+    ],
+    "answer": 0,
+    "explanation": "Battery Health can be found in System Settings under Battery."
+  },
+  {
+    "question": "Which macOS feature encrypts the entire startup disk to protect user data? (v9)",
+    "options": [
+      "FileVault",
+      "Gatekeeper",
+      "Time Machine",
+      "Keychain Access"
+    ],
+    "answer": 0,
+    "explanation": "FileVault encrypts the startup disk using XTS-AES-128 encryption."
+  },
+  {
+    "question": "What utility is used to install a supervised profile via USB on an iOS device? (v9)",
+    "options": [
+      "Apple Configurator",
+      "iTunes",
+      "Profile Manager",
+      "Migration Assistant"
+    ],
+    "answer": 0,
+    "explanation": "Apple Configurator allows USB-based supervision and profile configuration."
+  },
+  {
+    "question": "Which tool verifies and repairs disk permissions and file system errors? (v9)",
+    "options": [
+      "Disk Utility",
+      "Terminal",
+      "First Aid",
+      "System Preferences"
+    ],
+    "answer": 0,
+    "explanation": "Disk Utility's First Aid verifies and repairs disk issues."
+  },
+  {
+    "question": "What does the T2 chip do in a Mac? (v9)",
+    "options": [
+      "Handles audio output",
+      "Manages disk encryption and secure boot",
+      "Controls fan speed",
+      "Improves screen resolution"
+    ],
+    "answer": 1,
+    "explanation": "The T2 chip adds hardware-based encryption and secure boot protection."
+  },
+  {
+    "question": "How do you access macOS Recovery on an Intel Mac? (v9)",
+    "options": [
+      "Command + R at startup",
+      "Hold Power button",
+      "Shift + Option + R",
+      "Command + Option + R"
+    ],
+    "answer": 0,
+    "explanation": "Command + R initiates Recovery Mode on Intel Macs."
+  },
+  {
+    "question": "What Apple ID security feature uses two devices to approve logins? (v9)",
+    "options": [
+      "Two-Factor Authentication",
+      "Single Sign-On",
+      "iCloud Lock",
+      "Keychain Sharing"
+    ],
+    "answer": 0,
+    "explanation": "Two-Factor Authentication requires approval from a trusted device or number."
+  },
+  {
+    "question": "What is the default port for Apple Remote Desktop (ARD)? (v9)",
+    "options": [
+      "3283",
+      "22",
+      "443",
+      "5900"
+    ],
+    "answer": 0,
+    "explanation": "Apple Remote Desktop uses TCP port 3283."
+  },
+  {
+    "question": "Which command installs a .pkg file via Terminal on macOS? (v9)",
+    "options": [
+      "sudo installer -pkg file.pkg -target /",
+      "sudo install file.pkg",
+      "pkgutil -i file.pkg",
+      "sudo dpkg -i file.pkg"
+    ],
+    "answer": 0,
+    "explanation": "Use 'sudo installer -pkg file.pkg -target /' to install .pkg files."
+  },
+  {
+    "question": "What iOS feature prevents unauthorized reactivation of erased devices? (v9)",
+    "options": [
+      "Activation Lock",
+      "Find My",
+      "Supervised Mode",
+      "Apple ID Lock"
+    ],
+    "answer": 0,
+    "explanation": "Activation Lock prevents unauthorized users from setting up a stolen device."
+  },
+  {
+    "question": "Where do you check battery health on a MacBook? (v9)",
+    "options": [
+      "System Settings > Battery > Battery Health",
+      "Activity Monitor",
+      "Console",
+      "System Settings > Accessibility"
+    ],
+    "answer": 0,
+    "explanation": "Battery Health can be found in System Settings under Battery."
+  },
+  {
+    "question": "Which macOS feature encrypts the entire startup disk to protect user data? (v10)",
+    "options": [
+      "FileVault",
+      "Gatekeeper",
+      "Time Machine",
+      "Keychain Access"
+    ],
+    "answer": 0,
+    "explanation": "FileVault encrypts the startup disk using XTS-AES-128 encryption."
+  },
+  {
+    "question": "What utility is used to install a supervised profile via USB on an iOS device? (v10)",
+    "options": [
+      "Apple Configurator",
+      "iTunes",
+      "Profile Manager",
+      "Migration Assistant"
+    ],
+    "answer": 0,
+    "explanation": "Apple Configurator allows USB-based supervision and profile configuration."
+  },
+  {
+    "question": "Which tool verifies and repairs disk permissions and file system errors? (v10)",
+    "options": [
+      "Disk Utility",
+      "Terminal",
+      "First Aid",
+      "System Preferences"
+    ],
+    "answer": 0,
+    "explanation": "Disk Utility's First Aid verifies and repairs disk issues."
+  },
+  {
+    "question": "What does the T2 chip do in a Mac? (v10)",
+    "options": [
+      "Handles audio output",
+      "Manages disk encryption and secure boot",
+      "Controls fan speed",
+      "Improves screen resolution"
+    ],
+    "answer": 1,
+    "explanation": "The T2 chip adds hardware-based encryption and secure boot protection."
+  },
+  {
+    "question": "How do you access macOS Recovery on an Intel Mac? (v10)",
+    "options": [
+      "Command + R at startup",
+      "Hold Power button",
+      "Shift + Option + R",
+      "Command + Option + R"
+    ],
+    "answer": 0,
+    "explanation": "Command + R initiates Recovery Mode on Intel Macs."
+  },
+  {
+    "question": "What Apple ID security feature uses two devices to approve logins? (v10)",
+    "options": [
+      "Two-Factor Authentication",
+      "Single Sign-On",
+      "iCloud Lock",
+      "Keychain Sharing"
+    ],
+    "answer": 0,
+    "explanation": "Two-Factor Authentication requires approval from a trusted device or number."
+  },
+  {
+    "question": "What is the default port for Apple Remote Desktop (ARD)? (v10)",
+    "options": [
+      "3283",
+      "22",
+      "443",
+      "5900"
+    ],
+    "answer": 0,
+    "explanation": "Apple Remote Desktop uses TCP port 3283."
+  },
+  {
+    "question": "Which command installs a .pkg file via Terminal on macOS? (v10)",
+    "options": [
+      "sudo installer -pkg file.pkg -target /",
+      "sudo install file.pkg",
+      "pkgutil -i file.pkg",
+      "sudo dpkg -i file.pkg"
+    ],
+    "answer": 0,
+    "explanation": "Use 'sudo installer -pkg file.pkg -target /' to install .pkg files."
+  },
+  {
+    "question": "What iOS feature prevents unauthorized reactivation of erased devices? (v10)",
+    "options": [
+      "Activation Lock",
+      "Find My",
+      "Supervised Mode",
+      "Apple ID Lock"
+    ],
+    "answer": 0,
+    "explanation": "Activation Lock prevents unauthorized users from setting up a stolen device."
+  },
+  {
+    "question": "Where do you check battery health on a MacBook? (v10)",
+    "options": [
+      "System Settings > Battery > Battery Health",
+      "Activity Monitor",
+      "Console",
+      "System Settings > Accessibility"
+    ],
+    "answer": 0,
+    "explanation": "Battery Health can be found in System Settings under Battery."
+  },
+  {
+    "question": "Which macOS feature encrypts the entire startup disk to protect user data? (v11)",
+    "options": [
+      "FileVault",
+      "Gatekeeper",
+      "Time Machine",
+      "Keychain Access"
+    ],
+    "answer": 0,
+    "explanation": "FileVault encrypts the startup disk using XTS-AES-128 encryption."
+  },
+  {
+    "question": "What utility is used to install a supervised profile via USB on an iOS device? (v11)",
+    "options": [
+      "Apple Configurator",
+      "iTunes",
+      "Profile Manager",
+      "Migration Assistant"
+    ],
+    "answer": 0,
+    "explanation": "Apple Configurator allows USB-based supervision and profile configuration."
+  },
+  {
+    "question": "Which tool verifies and repairs disk permissions and file system errors? (v11)",
+    "options": [
+      "Disk Utility",
+      "Terminal",
+      "First Aid",
+      "System Preferences"
+    ],
+    "answer": 0,
+    "explanation": "Disk Utility's First Aid verifies and repairs disk issues."
+  },
+  {
+    "question": "What does the T2 chip do in a Mac? (v11)",
+    "options": [
+      "Handles audio output",
+      "Manages disk encryption and secure boot",
+      "Controls fan speed",
+      "Improves screen resolution"
+    ],
+    "answer": 1,
+    "explanation": "The T2 chip adds hardware-based encryption and secure boot protection."
+  },
+  {
+    "question": "How do you access macOS Recovery on an Intel Mac? (v11)",
+    "options": [
+      "Command + R at startup",
+      "Hold Power button",
+      "Shift + Option + R",
+      "Command + Option + R"
+    ],
+    "answer": 0,
+    "explanation": "Command + R initiates Recovery Mode on Intel Macs."
+  },
+  {
+    "question": "What Apple ID security feature uses two devices to approve logins? (v11)",
+    "options": [
+      "Two-Factor Authentication",
+      "Single Sign-On",
+      "iCloud Lock",
+      "Keychain Sharing"
+    ],
+    "answer": 0,
+    "explanation": "Two-Factor Authentication requires approval from a trusted device or number."
+  },
+  {
+    "question": "What is the default port for Apple Remote Desktop (ARD)? (v11)",
+    "options": [
+      "3283",
+      "22",
+      "443",
+      "5900"
+    ],
+    "answer": 0,
+    "explanation": "Apple Remote Desktop uses TCP port 3283."
+  },
+  {
+    "question": "Which command installs a .pkg file via Terminal on macOS? (v11)",
+    "options": [
+      "sudo installer -pkg file.pkg -target /",
+      "sudo install file.pkg",
+      "pkgutil -i file.pkg",
+      "sudo dpkg -i file.pkg"
+    ],
+    "answer": 0,
+    "explanation": "Use 'sudo installer -pkg file.pkg -target /' to install .pkg files."
+  },
+  {
+    "question": "What iOS feature prevents unauthorized reactivation of erased devices? (v11)",
+    "options": [
+      "Activation Lock",
+      "Find My",
+      "Supervised Mode",
+      "Apple ID Lock"
+    ],
+    "answer": 0,
+    "explanation": "Activation Lock prevents unauthorized users from setting up a stolen device."
+  },
+  {
+    "question": "Where do you check battery health on a MacBook? (v11)",
+    "options": [
+      "System Settings > Battery > Battery Health",
+      "Activity Monitor",
+      "Console",
+      "System Settings > Accessibility"
+    ],
+    "answer": 0,
+    "explanation": "Battery Health can be found in System Settings under Battery."
+  },
+  {
+    "question": "Which macOS feature encrypts the entire startup disk to protect user data? (v12)",
+    "options": [
+      "FileVault",
+      "Gatekeeper",
+      "Time Machine",
+      "Keychain Access"
+    ],
+    "answer": 0,
+    "explanation": "FileVault encrypts the startup disk using XTS-AES-128 encryption."
+  },
+  {
+    "question": "What utility is used to install a supervised profile via USB on an iOS device? (v12)",
+    "options": [
+      "Apple Configurator",
+      "iTunes",
+      "Profile Manager",
+      "Migration Assistant"
+    ],
+    "answer": 0,
+    "explanation": "Apple Configurator allows USB-based supervision and profile configuration."
+  },
+  {
+    "question": "Which tool verifies and repairs disk permissions and file system errors? (v12)",
+    "options": [
+      "Disk Utility",
+      "Terminal",
+      "First Aid",
+      "System Preferences"
+    ],
+    "answer": 0,
+    "explanation": "Disk Utility's First Aid verifies and repairs disk issues."
+  },
+  {
+    "question": "What does the T2 chip do in a Mac? (v12)",
+    "options": [
+      "Handles audio output",
+      "Manages disk encryption and secure boot",
+      "Controls fan speed",
+      "Improves screen resolution"
+    ],
+    "answer": 1,
+    "explanation": "The T2 chip adds hardware-based encryption and secure boot protection."
+  },
+  {
+    "question": "How do you access macOS Recovery on an Intel Mac? (v12)",
+    "options": [
+      "Command + R at startup",
+      "Hold Power button",
+      "Shift + Option + R",
+      "Command + Option + R"
+    ],
+    "answer": 0,
+    "explanation": "Command + R initiates Recovery Mode on Intel Macs."
+  },
+  {
+    "question": "What Apple ID security feature uses two devices to approve logins? (v12)",
+    "options": [
+      "Two-Factor Authentication",
+      "Single Sign-On",
+      "iCloud Lock",
+      "Keychain Sharing"
+    ],
+    "answer": 0,
+    "explanation": "Two-Factor Authentication requires approval from a trusted device or number."
+  },
+  {
+    "question": "What is the default port for Apple Remote Desktop (ARD)? (v12)",
+    "options": [
+      "3283",
+      "22",
+      "443",
+      "5900"
+    ],
+    "answer": 0,
+    "explanation": "Apple Remote Desktop uses TCP port 3283."
+  },
+  {
+    "question": "Which command installs a .pkg file via Terminal on macOS? (v12)",
+    "options": [
+      "sudo installer -pkg file.pkg -target /",
+      "sudo install file.pkg",
+      "pkgutil -i file.pkg",
+      "sudo dpkg -i file.pkg"
+    ],
+    "answer": 0,
+    "explanation": "Use 'sudo installer -pkg file.pkg -target /' to install .pkg files."
+  },
+  {
+    "question": "What iOS feature prevents unauthorized reactivation of erased devices? (v12)",
+    "options": [
+      "Activation Lock",
+      "Find My",
+      "Supervised Mode",
+      "Apple ID Lock"
+    ],
+    "answer": 0,
+    "explanation": "Activation Lock prevents unauthorized users from setting up a stolen device."
+  },
+  {
+    "question": "Where do you check battery health on a MacBook? (v12)",
+    "options": [
+      "System Settings > Battery > Battery Health",
+      "Activity Monitor",
+      "Console",
+      "System Settings > Accessibility"
+    ],
+    "answer": 0,
+    "explanation": "Battery Health can be found in System Settings under Battery."
+  },
+  {
+    "question": "Which macOS feature encrypts the entire startup disk to protect user data? (v13)",
+    "options": [
+      "FileVault",
+      "Gatekeeper",
+      "Time Machine",
+      "Keychain Access"
+    ],
+    "answer": 0,
+    "explanation": "FileVault encrypts the startup disk using XTS-AES-128 encryption."
+  },
+  {
+    "question": "What utility is used to install a supervised profile via USB on an iOS device? (v13)",
+    "options": [
+      "Apple Configurator",
+      "iTunes",
+      "Profile Manager",
+      "Migration Assistant"
+    ],
+    "answer": 0,
+    "explanation": "Apple Configurator allows USB-based supervision and profile configuration."
+  },
+  {
+    "question": "Which tool verifies and repairs disk permissions and file system errors? (v13)",
+    "options": [
+      "Disk Utility",
+      "Terminal",
+      "First Aid",
+      "System Preferences"
+    ],
+    "answer": 0,
+    "explanation": "Disk Utility's First Aid verifies and repairs disk issues."
+  },
+  {
+    "question": "What does the T2 chip do in a Mac? (v13)",
+    "options": [
+      "Handles audio output",
+      "Manages disk encryption and secure boot",
+      "Controls fan speed",
+      "Improves screen resolution"
+    ],
+    "answer": 1,
+    "explanation": "The T2 chip adds hardware-based encryption and secure boot protection."
+  },
+  {
+    "question": "How do you access macOS Recovery on an Intel Mac? (v13)",
+    "options": [
+      "Command + R at startup",
+      "Hold Power button",
+      "Shift + Option + R",
+      "Command + Option + R"
+    ],
+    "answer": 0,
+    "explanation": "Command + R initiates Recovery Mode on Intel Macs."
+  },
+  {
+    "question": "What Apple ID security feature uses two devices to approve logins? (v13)",
+    "options": [
+      "Two-Factor Authentication",
+      "Single Sign-On",
+      "iCloud Lock",
+      "Keychain Sharing"
+    ],
+    "answer": 0,
+    "explanation": "Two-Factor Authentication requires approval from a trusted device or number."
+  },
+  {
+    "question": "What is the default port for Apple Remote Desktop (ARD)? (v13)",
+    "options": [
+      "3283",
+      "22",
+      "443",
+      "5900"
+    ],
+    "answer": 0,
+    "explanation": "Apple Remote Desktop uses TCP port 3283."
+  },
+  {
+    "question": "Which command installs a .pkg file via Terminal on macOS? (v13)",
+    "options": [
+      "sudo installer -pkg file.pkg -target /",
+      "sudo install file.pkg",
+      "pkgutil -i file.pkg",
+      "sudo dpkg -i file.pkg"
+    ],
+    "answer": 0,
+    "explanation": "Use 'sudo installer -pkg file.pkg -target /' to install .pkg files."
+  },
+  {
+    "question": "What iOS feature prevents unauthorized reactivation of erased devices? (v13)",
+    "options": [
+      "Activation Lock",
+      "Find My",
+      "Supervised Mode",
+      "Apple ID Lock"
+    ],
+    "answer": 0,
+    "explanation": "Activation Lock prevents unauthorized users from setting up a stolen device."
+  },
+  {
+    "question": "Where do you check battery health on a MacBook? (v13)",
+    "options": [
+      "System Settings > Battery > Battery Health",
+      "Activity Monitor",
+      "Console",
+      "System Settings > Accessibility"
+    ],
+    "answer": 0,
+    "explanation": "Battery Health can be found in System Settings under Battery."
+  },
+  {
+    "question": "Which macOS feature encrypts the entire startup disk to protect user data? (v14)",
+    "options": [
+      "FileVault",
+      "Gatekeeper",
+      "Time Machine",
+      "Keychain Access"
+    ],
+    "answer": 0,
+    "explanation": "FileVault encrypts the startup disk using XTS-AES-128 encryption."
+  },
+  {
+    "question": "What utility is used to install a supervised profile via USB on an iOS device? (v14)",
+    "options": [
+      "Apple Configurator",
+      "iTunes",
+      "Profile Manager",
+      "Migration Assistant"
+    ],
+    "answer": 0,
+    "explanation": "Apple Configurator allows USB-based supervision and profile configuration."
+  },
+  {
+    "question": "Which tool verifies and repairs disk permissions and file system errors? (v14)",
+    "options": [
+      "Disk Utility",
+      "Terminal",
+      "First Aid",
+      "System Preferences"
+    ],
+    "answer": 0,
+    "explanation": "Disk Utility's First Aid verifies and repairs disk issues."
+  },
+  {
+    "question": "What does the T2 chip do in a Mac? (v14)",
+    "options": [
+      "Handles audio output",
+      "Manages disk encryption and secure boot",
+      "Controls fan speed",
+      "Improves screen resolution"
+    ],
+    "answer": 1,
+    "explanation": "The T2 chip adds hardware-based encryption and secure boot protection."
+  },
+  {
+    "question": "How do you access macOS Recovery on an Intel Mac? (v14)",
+    "options": [
+      "Command + R at startup",
+      "Hold Power button",
+      "Shift + Option + R",
+      "Command + Option + R"
+    ],
+    "answer": 0,
+    "explanation": "Command + R initiates Recovery Mode on Intel Macs."
+  },
+  {
+    "question": "What Apple ID security feature uses two devices to approve logins? (v14)",
+    "options": [
+      "Two-Factor Authentication",
+      "Single Sign-On",
+      "iCloud Lock",
+      "Keychain Sharing"
+    ],
+    "answer": 0,
+    "explanation": "Two-Factor Authentication requires approval from a trusted device or number."
+  },
+  {
+    "question": "What is the default port for Apple Remote Desktop (ARD)? (v14)",
+    "options": [
+      "3283",
+      "22",
+      "443",
+      "5900"
+    ],
+    "answer": 0,
+    "explanation": "Apple Remote Desktop uses TCP port 3283."
+  },
+  {
+    "question": "Which command installs a .pkg file via Terminal on macOS? (v14)",
+    "options": [
+      "sudo installer -pkg file.pkg -target /",
+      "sudo install file.pkg",
+      "pkgutil -i file.pkg",
+      "sudo dpkg -i file.pkg"
+    ],
+    "answer": 0,
+    "explanation": "Use 'sudo installer -pkg file.pkg -target /' to install .pkg files."
+  },
+  {
+    "question": "What iOS feature prevents unauthorized reactivation of erased devices? (v14)",
+    "options": [
+      "Activation Lock",
+      "Find My",
+      "Supervised Mode",
+      "Apple ID Lock"
+    ],
+    "answer": 0,
+    "explanation": "Activation Lock prevents unauthorized users from setting up a stolen device."
+  },
+  {
+    "question": "Where do you check battery health on a MacBook? (v14)",
+    "options": [
+      "System Settings > Battery > Battery Health",
+      "Activity Monitor",
+      "Console",
+      "System Settings > Accessibility"
+    ],
+    "answer": 0,
+    "explanation": "Battery Health can be found in System Settings under Battery."
+  },
+  {
+    "question": "Which macOS feature encrypts the entire startup disk to protect user data? (v15)",
+    "options": [
+      "FileVault",
+      "Gatekeeper",
+      "Time Machine",
+      "Keychain Access"
+    ],
+    "answer": 0,
+    "explanation": "FileVault encrypts the startup disk using XTS-AES-128 encryption."
+  },
+  {
+    "question": "What utility is used to install a supervised profile via USB on an iOS device? (v15)",
+    "options": [
+      "Apple Configurator",
+      "iTunes",
+      "Profile Manager",
+      "Migration Assistant"
+    ],
+    "answer": 0,
+    "explanation": "Apple Configurator allows USB-based supervision and profile configuration."
+  },
+  {
+    "question": "Which tool verifies and repairs disk permissions and file system errors? (v15)",
+    "options": [
+      "Disk Utility",
+      "Terminal",
+      "First Aid",
+      "System Preferences"
+    ],
+    "answer": 0,
+    "explanation": "Disk Utility's First Aid verifies and repairs disk issues."
+  },
+  {
+    "question": "What does the T2 chip do in a Mac? (v15)",
+    "options": [
+      "Handles audio output",
+      "Manages disk encryption and secure boot",
+      "Controls fan speed",
+      "Improves screen resolution"
+    ],
+    "answer": 1,
+    "explanation": "The T2 chip adds hardware-based encryption and secure boot protection."
+  },
+  {
+    "question": "How do you access macOS Recovery on an Intel Mac? (v15)",
+    "options": [
+      "Command + R at startup",
+      "Hold Power button",
+      "Shift + Option + R",
+      "Command + Option + R"
+    ],
+    "answer": 0,
+    "explanation": "Command + R initiates Recovery Mode on Intel Macs."
+  },
+  {
+    "question": "What Apple ID security feature uses two devices to approve logins? (v15)",
+    "options": [
+      "Two-Factor Authentication",
+      "Single Sign-On",
+      "iCloud Lock",
+      "Keychain Sharing"
+    ],
+    "answer": 0,
+    "explanation": "Two-Factor Authentication requires approval from a trusted device or number."
+  },
+  {
+    "question": "What is the default port for Apple Remote Desktop (ARD)? (v15)",
+    "options": [
+      "3283",
+      "22",
+      "443",
+      "5900"
+    ],
+    "answer": 0,
+    "explanation": "Apple Remote Desktop uses TCP port 3283."
+  },
+  {
+    "question": "Which command installs a .pkg file via Terminal on macOS? (v15)",
+    "options": [
+      "sudo installer -pkg file.pkg -target /",
+      "sudo install file.pkg",
+      "pkgutil -i file.pkg",
+      "sudo dpkg -i file.pkg"
+    ],
+    "answer": 0,
+    "explanation": "Use 'sudo installer -pkg file.pkg -target /' to install .pkg files."
+  },
+  {
+    "question": "What iOS feature prevents unauthorized reactivation of erased devices? (v15)",
+    "options": [
+      "Activation Lock",
+      "Find My",
+      "Supervised Mode",
+      "Apple ID Lock"
+    ],
+    "answer": 0,
+    "explanation": "Activation Lock prevents unauthorized users from setting up a stolen device."
+  },
+  {
+    "question": "Where do you check battery health on a MacBook? (v15)",
+    "options": [
+      "System Settings > Battery > Battery Health",
+      "Activity Monitor",
+      "Console",
+      "System Settings > Accessibility"
+    ],
+    "answer": 0,
+    "explanation": "Battery Health can be found in System Settings under Battery."
+  }
+];
+    let currentSet = [], userAnswers = {}, quizStartTime = 0, timerInterval;
+
+    function startQuiz(count) {
+      clearInterval(timerInterval);
+      quizStartTime = Date.now();
+      timerInterval = setInterval(updateTimer, 1000);
+      currentSet = shuffle([...questions]).slice(0, count);
+      userAnswers = {};
+      renderQuiz(); saveProgress();
+    }
+
+    function resumeQuiz() {
+      const saved = JSON.parse(localStorage.getItem("appleQuizSave"));
+      if (!saved) return alert("No saved quiz found.");
+      currentSet = saved.currentSet;
+      userAnswers = saved.userAnswers;
+      quizStartTime = Date.now() - saved.elapsed;
+      timerInterval = setInterval(updateTimer, 1000);
+      renderQuiz();
+    }
+
+    function saveProgress() {
+      const elapsed = Date.now() - quizStartTime;
+      localStorage.setItem("appleQuizSave", JSON.stringify({ currentSet, userAnswers, elapsed }));
+    }
+
+    function renderQuiz() {
+      const quizForm = document.getElementById("quizForm");
+      quizForm.innerHTML = "";
+      currentSet.forEach((q, index) => {
+        const div = document.createElement("div");
+        div.className = "question";
+        const optionsHTML = q.options.map((opt, i) => `
+          <label><input type="radio" name="q${index}" value="${i}" onchange="recordAnswer(${index}, ${i})"> ${opt}</label>
+        `).join("");
+        div.innerHTML = `
+          <h3>${index + 1}. ${q.question}</h3>
+          ${optionsHTML}
+          <button type="button" onclick="checkAnswer(${index})">Check Answer</button>
+          <p class="explanation" id="exp${index}">✅ ${q.explanation}</p>
+        `;
+        quizForm.appendChild(div);
+      });
+      const finishBtn = document.createElement("button");
+      finishBtn.textContent = "Finish and Score";
+      finishBtn.type = "button";
+      finishBtn.onclick = gradeQuiz;
+      quizForm.appendChild(finishBtn);
+    }
+
+    function recordAnswer(index, value) {
+      userAnswers[index] = value;
+      saveProgress();
+    }
+
+    function checkAnswer(index) {
+      const correct = currentSet[index].answer;
+      const user = userAnswers[index];
+      const exp = document.getElementById("exp" + index);
+      const isCorrect = parseInt(user) === correct;
+      exp.style.display = "block";
+      exp.style.color = isCorrect ? "green" : "red";
+      exp.innerText = (isCorrect ? "✅ Correct." : "❌ Incorrect.") + " " + currentSet[index].explanation;
+    }
+
+    function gradeQuiz() {
+      let correct = 0;
+      currentSet.forEach((q, i) => {
+        if (parseInt(userAnswers[i]) === q.answer) correct++;
+      });
+      document.getElementById("score").innerText = `✅ You scored ${correct} out of ${currentSet.length}`;
+      clearInterval(timerInterval);
+      localStorage.removeItem("appleQuizSave");
+    }
+
+    function updateTimer() {
+      const elapsed = Math.floor((Date.now() - quizStartTime) / 1000);
+      const min = Math.floor(elapsed / 60);
+      const sec = elapsed % 60;
+      document.getElementById("time").innerText = `${min}m ${sec}s`;
+    }
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+    }
+  </script>
+</body>
+</html>
